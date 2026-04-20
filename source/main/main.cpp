@@ -2,6 +2,7 @@
 #include <cstdio>
 #include <atomic>
 #include <csignal>
+#include "display.hpp"
 
 std::atomic<bool> running(true);
 
@@ -18,19 +19,24 @@ int main(int argc, char** argv)
   setbuf(stdout, NULL);
 #endif
 
+  cDisplay display;
+  display.Init(0x27U);
+
   // End endless while-loop with Ctrl+C and call destructors
   std::signal(SIGINT, HandleCancellation);
   uint32_t counter = 0U;
 
-  // I2C address is 0x68
-  // Standard and fast mode supported
-  // Only 7-bit address mode
-
   while (running)
   {
     printf("%u\n", counter);
-    counter++;
+    display.Clear();
+    display.Home();
+    display.Print(L"Hello world!\n");
+    display.Print(L"Seconds: ");
+    display.Print(counter);
+
     sleep(1U);
+    counter++;
   }
 
   return 0;

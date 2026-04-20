@@ -1,7 +1,7 @@
-# RPi Zero 2W IMU Motion Visualizer (GY-BMI160)
+# RPi Zero 2W Random Number Guess Game
 
 A small embedded Linux project running on **Raspberry Pi Zero 2W**, built using **Yocto**.  
-The goal is to interface with a **GY-BMI160 6-axis IMU (accelerometer + gyroscope)** over I2C and visualize motion in real time in a terminal-based interface.
+The goal is to create an interactive "Random Number Guess" game displayed on an **I2C display**.
 
 ---
 
@@ -14,16 +14,16 @@ It uses:
 - Yocto-based custom Linux image
 - C++ userspace application
 - I2C communication
-- GY-BMI160 6-axis IMU (accelerometer + gyroscope)
+- I2C LCD/OLED display (e.g., 16x2 LCD or SSD1306 OLED)
 
-The end goal is to read motion data from the sensor and visualize it as a real-time 2D position (and optionally a simple physics simulation) in the terminal.
+The game generates a random number and lets the user guess it, with feedback shown on the display.
 
 ---
 
 ## Hardware
 
 - Raspberry Pi Zero 2W
-- GY-BMI160 (6-axis IMU: accelerometer + gyroscope)
+- I2C display (16x2 LCD or SSD1306 OLED)
 - I2C interface (enabled via device tree / Yocto configuration)
 
 ---
@@ -32,12 +32,12 @@ The end goal is to read motion data from the sensor and visualize it as a real-t
 
 The project is structured as a sequence of small, verifiable steps:
 
-1. Establish I2C communication with the IMU
-2. Read and verify sensor registers
-3. Read raw accelerometer / gyroscope data
-4. Convert raw values into meaningful motion data
-5. Visualize motion in a terminal-based 1D/2D display
-6. (Optional) Add smoothing / “ball-like” motion behavior
+1. Establish I2C communication with the display
+2. Initialize the display and show static text
+3. Implement random number generation logic
+4. Create user input mechanism (buttons or serial)
+5. Implement game logic (compare guess vs random number)
+6. Display feedback (too high, too low, correct!)
 
 ---
 
@@ -46,7 +46,7 @@ The project is structured as a sequence of small, verifiable steps:
 The main userspace application is:
 
 ```
-tilt-grid
+game
 ```
 
 A C++ application built with a typical embedded workflow (CMake via Make helpers, cross-compilation via Yocto SDK).
@@ -94,28 +94,25 @@ make ssh
 ## Development Stages
 
 ### Level 1 — I2C Detection
-Confirm that the IMU is visible on the I2C bus.
+Confirm that the display is visible on the I2C bus.
 
-### Level 2 — Register Read
-Read basic device registers (e.g. chip ID).
+### Level 2 — Display Initialization
+Initialize the display and verify it works.
 
-### Level 3 — Register Write/Read
-Verify two-way communication with the sensor.
+### Level 3 — Static Text
+Display static text on the screen.
 
-### Level 4 — Motion Data
-Read raw accelerometer and gyroscope data.
+### Level 4 — Random Number Generation
+Implement random number generation logic.
 
-### Level 5 — Interpretation
-Convert raw sensor data into meaningful motion values.
+### Level 5 — Input Mechanism
+Implement user input (buttons or serial).
 
-### Level 6 — 1D Visualization
-Map motion to a single-axis terminal visualization.
+### Level 6 — Game Logic
+Implement guess comparison and feedback.
 
-### Level 7 — 2D Visualization
-Extend visualization into a 2D grid.
-
-### Level 8 — Optional Physics Layer
-Add smoothing, inertia, or “ball-like” motion behavior.
+### Level 7 — Game Flow
+Complete game flow (new game, guess, win/lose).
 
 ---
 
@@ -130,9 +127,9 @@ Add smoothing, inertia, or “ball-like” motion behavior.
 
 ## Notes
 
-- Sensor output may be noisy and require filtering
-- Calibration may be required depending on configuration
-- Early stages prioritize correctness over precision
+- Display may require specific initialization sequence
+- I2C address may vary depending on display module
+- Early stages prioritize correctness over features
 
 ---
 

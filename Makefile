@@ -1,7 +1,7 @@
 # version 1.1.0
 all: run
 
-EXECUTABLE_FILE ?= tilt-grid
+EXECUTABLE_FILE ?= game
 HOST_DESTINATION ?= root@192.168.7.2
 
 .PHONY: help clean generate build deploy run run_only ssh

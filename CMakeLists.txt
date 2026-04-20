@@ -1,6 +1,6 @@
 ## CMake settings
 cmake_minimum_required(VERSION 3.10)
-project(tilt_grid)
+project(game)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 ## Source files
@@ -30,11 +30,11 @@ endforeach()
 list(REMOVE_DUPLICATES ABSOLUTE_HEADER_DIR_LIST)
 
 ## Executable
-add_executable(tilt-grid ${ABSOLUTE_SOURCE_LIST})
-target_include_directories(tilt-grid PUBLIC ${ABSOLUTE_HEADER_DIR_LIST})
+add_executable(game ${ABSOLUTE_SOURCE_LIST})
+target_include_directories(game PUBLIC ${ABSOLUTE_HEADER_DIR_LIST})
 
 ## Flags
-target_compile_options(tilt-grid PUBLIC
+target_compile_options(game PUBLIC
     -std=c++17
     -g
     -Wall
@@ -43,13 +43,21 @@ target_compile_options(tilt-grid PUBLIC
 )
 
 ## Definitions
-target_compile_options(tilt-grid PUBLIC
+target_compile_options(game PUBLIC
     $<$<CONFIG:Debug>:-U_FORTIFY_SOURCE>
     $<$<CONFIG:Debug>:-D_FORTIFY_SOURCE=0>
     $<$<CONFIG:Debug>:-D_DEBUG=1>
 )
 
-target_compile_definitions(tilt-grid PUBLIC
+target_compile_definitions(game PUBLIC
     DHT_DEBUG=0
 )
+
+## I2C
+find_library(I2C_LIBRARY i2c)
+if (NOT I2C_LIBRARY)
+    message(FATAL_ERROR "i2c not found")
+endif()
+
+target_link_libraries(game ${I2C_LIBRARY})
 
