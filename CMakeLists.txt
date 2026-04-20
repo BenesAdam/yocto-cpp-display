@@ -49,8 +49,10 @@ target_compile_options(game PUBLIC
     $<$<CONFIG:Debug>:-D_DEBUG=1>
 )
 
+option(GAME_DEBUG "Debug mode of game is enabled." OFF)
+
 target_compile_definitions(game PUBLIC
-    DHT_DEBUG=0
+    _GAME_DEBUG=$<BOOL:${GAME_DEBUG}>
 )
 
 ## I2C

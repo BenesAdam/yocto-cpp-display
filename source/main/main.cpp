@@ -2,7 +2,7 @@
 #include <cstdio>
 #include <atomic>
 #include <csignal>
-#include "display.hpp"
+#include "game.hpp"
 
 std::atomic<bool> running(true);
 
@@ -10,6 +10,8 @@ void HandleCancellation(const int arg_signal_number)
 {
   static_cast<void>(arg_signal_number);
   running = false;
+  printf("\nEnd of the game.\n");
+  std::exit(1);
 }
 
 int main(int argc, char** argv)
@@ -19,24 +21,14 @@ int main(int argc, char** argv)
   setbuf(stdout, NULL);
 #endif
 
-  cDisplay display;
-  display.Init(0x27U);
+  cGame::GetInstance().Init();
 
   // End endless while-loop with Ctrl+C and call destructors
   std::signal(SIGINT, HandleCancellation);
-  uint32_t counter = 0U;
 
   while (running)
   {
-    printf("%u\n", counter);
-    display.Clear();
-    display.Home();
-    display.Print(L"Hello world!\n");
-    display.Print(L"Seconds: ");
-    display.Print(counter);
-
-    sleep(1U);
-    counter++;
+    cGame::GetInstance().Run();
   }
 
   return 0;
